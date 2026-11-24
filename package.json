@@ -1,0 +1,14 @@
+{
+  "name": "luma-ai",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Luma AI chat powered by Groq with local chat history and preferences",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2"
+  }
+}
