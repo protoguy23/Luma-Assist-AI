@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b14">
+<title>Luma — AI assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+/* Luma scrolling improvements */
+.app {
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 0;
+}
+
+.sidebar,
+.main {
+  min-height: 0;
+}
+
+.sidebar {
+  overflow: hidden;
+}
+
+.history {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.main {
+  height: 100%;
+}
+
+.topbar,
+.composer-wrap {
+  flex: 0 0 auto;
+}
+
+.content {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+/* Custom scrollbar */
+.content::-webkit-scrollbar,
+.history::-webkit-scrollbar {
+  width: 9px;
+}
+
+.content::-webkit-scrollbar-thumb,
+.history::-webkit-scrollbar-thumb {
+  background: #39334f;
+  border-radius: 20px;
+}
+
+@media (max-width: 720px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .main,
+  .content {
+    min-height: 0;
+  }
+}
+
+:root{color-scheme:dark;--bg:#0b0b14;--panel:#11111e;--panel2:#171728;--line:#292941;--muted:#9292ad;--text:#f4f2ff;--purple:#a78bfa;--pink:#e879f9}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% -15%,#30204e 0,transparent 38%),var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;height:100dvh;overflow:hidden}
+button,textarea{font:inherit}.app{display:grid;grid-template-columns:260px 1fr;height:100dvh;max-width:1600px;margin:auto}
+.sidebar{background:#0e0e19;border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 7px}.logo{width:39px;height:39px;border-radius:14px;background:linear-gradient(145deg,#c4b5fd,#8b5cf6 55%,#ec4899);display:grid;place-items:center;box-shadow:0 5px 24px #8b5cf655}.logo svg{width:23px}.brand-name{font:700 22px "Space Grotesk";letter-spacing:-.7px}.brand-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.new-chat{border:1px solid #55417e;background:linear-gradient(110deg,#29203e,#1b1830);color:#eee8ff;border-radius:12px;padding:12px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600}.new-chat:hover{border-color:var(--purple);background:#2b2142}
+.side-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#74748e;padding:0 9px;margin-bottom:-12px}.history{display:flex;flex-direction:column;gap:5px;overflow:auto}.history button{border:0;background:transparent;color:#b8b6ce;text-align:left;padding:10px;border-radius:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}.history button:hover,.history button.active{background:#1d1b2d;color:white}.side-bottom{margin-top:auto;border-top:1px solid var(--line);padding:15px 7px 0;display:flex;align-items:center;gap:10px}.avatar{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;background:#28203d;color:#d8c9ff;font-weight:700}.status{font-size:12px;color:var(--muted)}.status b{display:block;color:#ddd9ed;font-size:13px;margin-bottom:2px}
+.main{display:flex;flex-direction:column;min-width:0;position:relative}.topbar{height:68px;border-bottom:1px solid #252438;display:flex;align-items:center;justify-content:space-between;padding:0 30px;background:#0c0c16a8;backdrop-filter:blur(14px)}.model{font-size:13px;color:#d8d4e8;display:flex;align-items:center;gap:9px}.model-dot{width:7px;height:7px;background:#9b83ff;border-radius:50%;box-shadow:0 0 12px #a78bfa}.top-right{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}.top-right span{border:1px solid var(--line);padding:7px 10px;border-radius:20px}
+.content{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:40px 22px 24px}.welcome{margin:auto 0;max-width:720px;width:100%;text-align:center;padding:20px 0 40px}.orb{width:76px;height:76px;border-radius:27px;margin:0 auto 24px;background:radial-gradient(circle at 35% 25%,#f5d0fe,#a78bfa 48%,#6d28d9 80%);box-shadow:0 0 65px #9b5de955, inset 0 2px 8px #fff8;display:grid;place-items:center}.orb svg{width:39px;filter:drop-shadow(0 2px 5px #52218b)}h1{font:600 clamp(30px,5vw,43px) "Space Grotesk";letter-spacing:-1.6px;margin:0 0 12px}.gradient{background:linear-gradient(100deg,#c4b5fd,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent}.welcome p{color:#aaa7c1;font-size:15px;margin:0 auto;max-width:470px;line-height:1.7}.suggestions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:31px auto 0;max-width:570px}.suggestion{background:#141321;border:1px solid #2a2840;color:#d5d1e8;text-align:left;padding:14px;border-radius:13px;cursor:pointer;font-size:13px;transition:.18s}.suggestion:hover{border-color:#8b70cb;transform:translateY(-2px);background:#1c1930}.suggestion b{display:block;color:#f1eaff;font-size:13px;margin-bottom:5px}.suggestion small{color:#9792ad;font-size:11px}
+.messages{width:min(790px,100%);display:flex;flex-direction:column;gap:24px;padding:4px 0 30px}.message{display:flex;gap:13px;align-items:flex-start;animation:rise .22s ease}.message.user{flex-direction:row-reverse}.msg-avatar{width:30px;height:30px;flex:0 0 30px;border-radius:11px;background:#29213e;display:grid;place-items:center;color:#d9c8ff}.user .msg-avatar{background:#292943;color:#d8d8f9}.bubble{max-width:calc(100% - 45px);padding:12px 15px;border-radius:15px;background:#171625;border:1px solid #29263c;line-height:1.7;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}.user .bubble{background:#29213e;border-color:#41335e}.bubble pre{white-space:pre-wrap;background:#0b0b13;padding:12px;border-radius:9px;overflow:auto}.bubble code{font-family:ui-monospace,monospace;color:#d7baff}.typing{display:flex;gap:5px;padding:7px}.typing i{width:6px;height:6px;background:#bba4ff;border-radius:50%;animation:pulse 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+.composer-wrap{width:min(790px,calc(100% - 44px));margin:0 auto 22px}.composer{background:#171625;border:1px solid #37324e;border-radius:18px;padding:11px 12px 10px;box-shadow:0 12px 50px #0005;transition:.2s}.composer:focus-within{border-color:#8c72c9;box-shadow:0 0 0 3px #9b79ef16,0 12px 50px #0005}.composer textarea{width:100%;resize:none;min-height:27px;max-height:150px;border:0;outline:0;background:transparent;color:white;padding:5px 6px;font-size:14px;line-height:1.6}.composer textarea::placeholder{color:#77748e}.composer-actions{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 0 5px}.hint{font-size:11px;color:#77748d}.send{width:36px;height:36px;border:0;border-radius:11px;background:linear-gradient(135deg,#b49aff,#8b5cf6);color:white;display:grid;place-items:center;cursor:pointer;transition:.15s}.send:hover{filter:brightness(1.15);transform:translateY(-1px)}.send:disabled{opacity:.4;cursor:not-allowed;transform:none}.disclaimer{text-align:center;color:#66647c;font-size:10px;margin-top:10px}.mobile-menu{display:none}
+
+#modelSelect{appearance:none;background:#171625;border:1px solid #39334f;border-radius:9px;color:#e9e3fa;padding:7px 28px 7px 10px;font:600 12px "DM Sans",sans-serif;max-width:190px;cursor:pointer;outline:none}
+#modelSelect:focus,.settings-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px #9b79ef16}
+.settings-btn,.close-settings{border:1px solid var(--line);background:#171625;color:#ded8ef;border-radius:10px;width:34px;height:34px;cursor:pointer;font-size:17px}
+.settings-btn:hover,.close-settings:hover{border-color:var(--purple);color:white}
+.history-row{display:flex;align-items:center;gap:3px}.history-row .history-open{flex:1;min-width:0}.history-tools{display:flex;opacity:0;transition:.15s}.history-row:hover .history-tools,.history-row:focus-within .history-tools{opacity:1}.history-tools button{padding:5px 6px;font-size:12px;color:#9690ae}.history-tools button:hover{color:#fff;background:#29213e}
+.modal-backdrop{position:fixed;inset:0;background:#05050bcc;backdrop-filter:blur(8px);z-index:20;display:grid;place-items:center;padding:18px}.modal-backdrop[hidden]{display:none}.settings-panel{width:min(520px,100%);max-height:min(90dvh,760px);overflow:auto;background:#131321;border:1px solid #38324f;border-radius:20px;padding:24px;box-shadow:0 25px 90px #0009}.settings-heading{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}.settings-heading h2{font:600 22px "Space Grotesk";margin:0 0 5px}.settings-heading p,.settings-help{font-size:12px;color:var(--muted);line-height:1.6;margin:0}.close-settings{font-size:23px;line-height:1}.field-label{display:block;font-size:12px;font-weight:700;color:#dcd6ed;margin:17px 0 8px}.settings-input{width:100%;border:1px solid #37324e;border-radius:10px;background:#0e0e19;color:#f4f2ff;padding:11px 12px;font:13px "DM Sans",sans-serif;outline:none}.settings-area{min-height:76px;resize:vertical;line-height:1.55}.memory-area{min-height:105px}.settings-help{margin-top:8px}.settings-actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px}.secondary-btn,.save-settings{border-radius:10px;padding:10px 14px;font:600 12px "DM Sans",sans-serif;cursor:pointer}.secondary-btn{border:1px solid var(--line);background:transparent;color:#c9c3da}.save-settings{border:0;background:linear-gradient(120deg,#b49aff,#8b5cf6);color:white}.bubble{white-space:normal}.bubble p{margin:0 0 10px}.bubble p:last-child{margin-bottom:0}.bubble h1,.bubble h2,.bubble h3{font:600 1.15em "Space Grotesk";margin:13px 0 7px;letter-spacing:0}.bubble ul,.bubble ol{margin:7px 0;padding-left:23px}.bubble li{margin:3px 0}.bubble blockquote{margin:8px 0;padding:3px 12px;border-left:3px solid #8b70cb;color:#c8c1da}.bubble pre{white-space:pre;position:relative;margin:10px 0;padding:14px;overflow:auto;background:#0a0a12;border:1px solid #302b42;border-radius:10px}.bubble pre code{color:#d9c9ff;white-space:pre}.bubble a{color:#c7aaff;text-decoration:underline}.bubble hr{border:0;border-top:1px solid #39334c;margin:12px 0}.bubble table{border-collapse:collapse;display:block;overflow:auto}.bubble th,.bubble td{border:1px solid #39334c;padding:6px 9px}.bubble strong{color:#fff}.bubble code:not(pre code){background:#0d0c17;border:1px solid #302b42;padding:2px 5px;border-radius:5px;font-size:.92em}
+@media(max-width:720px){#modelSelect{max-width:135px}.settings-panel{padding:19px}.history-tools{opacity:1}}
+
+@keyframes pulse{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:720px){.app{grid-template-columns:1fr}.sidebar{display:none}.topbar{height:58px;padding:0 16px}.mobile-menu{display:block;border:0;background:transparent;color:#ddd;font-size:20px}.content{padding:22px 15px}.welcome{padding:25px 0}.suggestions{grid-template-columns:1fr}.composer-wrap{width:calc(100% - 26px);margin-bottom:13px}.top-right span{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1.7 3.3 5.5 4.2 6.8 7.2 1.7 4-1.1 9-6.8 10-5.7-1-8.5-6-6.8-10C6.5 7.2 10.3 6.3 12 3Z"/><path d="M12 20c-.7-4.2.7-7.2 4.2-9.8"/></svg></div><div><div class="brand-name">luma</div><div class="brand-sub">AI, made curious</div></div></div>
+  <button class="new-chat" id="newChat">＋ <span>New conversation</span></button>
+  <div class="side-label">Recent</div><div class="history" id="history"></div>
+  <div class="side-bottom"><div class="avatar">L</div><div class="status"><b>Luma AI</b><span>Powered by Groq</span></div></div>
+</aside>
+<main class="main">
+  <header class="topbar">
+    <div class="model"><span class="model-dot"></span> Luma <span style="color:#77748e">/</span>
+      <select id="modelSelect" aria-label="Choose AI model"><option value="openai/gpt-oss-120b">GPT-OSS 120B</option></select>
+    </div>
+    <div class="top-right"><span>✦ Groq API</span><span id="connection">Checking connection…</span><button class="settings-btn" id="openSettings" title="Luma settings" aria-label="Luma settings">⚙</button></div>
+  </header>
+  <section class="content" id="content">
+    <div class="welcome" id="welcome">
+      <div class="orb"><svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 5c3.4 6.6 11 8.4 13.6 14.4C41 27.4 35.4 37.4 24 40 12.6 37.4 7 27.4 10.4 19.4 13 13.4 20.6 11.6 24 5Z"/><path d="M24 40c-1.4-8.4 1.4-14.4 8.4-19.6"/></svg></div>
+      <h1>Meet your <span class="gradient">new favorite AI.</span></h1>
+      <p>I'm Luma. I can help you think through ideas, learn new things, write code, and explore whatever you're curious about.</p>
+      <div class="suggestions">
+        <button class="suggestion" data-prompt="Explain a fascinating science idea in a simple way."><b>✧ Explore an idea</b><small>Make something complex feel simple</small></button>
+        <button class="suggestion" data-prompt="Help me brainstorm a creative project."><b>◈ Brainstorm together</b><small>Turn a spark into a plan</small></button>
+        <button class="suggestion" data-prompt="Teach me a useful coding concept with an example."><b>⌘ Learn to code</b><small>Build skills one step at a time</small></button>
+        <button class="suggestion" data-prompt="Give me a fun creative challenge."><b>✦ Get creative</b><small>Try something unexpected</small></button>
+      </div>
+    </div>
+    <div class="messages" id="messages" hidden></div>
+  </section>
+  <div class="composer-wrap">
+    <div class="composer"><textarea id="prompt" rows="1" placeholder="Message Luma…"></textarea><div class="composer-actions"><span class="hint">Enter to send · Shift + Enter for a new line</span><button class="send" id="send" aria-label="Send message"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 14-7-5 14-2-6-7-1Z"/><path d="m12 13 7-8"/></svg></button></div></div>
+    <div class="disclaimer">Luma can make mistakes. Check important information.</div>
+  </div>
+</main>
+</div>
+<div class="modal-backdrop" id="settingsModal" hidden>
+  <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="settings-heading"><div><h2 id="settingsTitle">Luma settings</h2><p>Shape how Luma responds and what it remembers.</p></div><button class="close-settings" id="closeSettings" aria-label="Close settings">×</button></div>
+    <label class="field-label" for="personality">Personality</label>
+    <select id="personality" class="settings-input">
+      <option value="balanced">Balanced — friendly and thoughtful</option>
+      <option value="concise">Concise — short and direct</option>
+      <option value="creative">Creative — imaginative and curious</option>
+      <option value="tutor">Tutor — patient, step-by-step explanations</option>
+      <option value="professional">Professional — polished and structured</option>
+    </select>
+    <label class="field-label" for="customInstructions">Custom instructions</label>
+    <textarea id="customInstructions" class="settings-input settings-area" maxlength="1800" placeholder="For example: Use simple explanations and include examples when useful."></textarea>
+    <label class="field-label" for="memoryNotes">Memory for Luma</label>
+    <textarea id="memoryNotes" class="settings-input settings-area memory-area" maxlength="3000" placeholder="Add things you'd like Luma to remember across chats, such as your projects, interests, or response preferences."></textarea>
+    <p class="settings-help">Memory is stored in this browser on this device. Only add information you're comfortable saving here.</p>
+    <div class="settings-actions"><button class="secondary-btn" id="clearMemory">Clear memory</button><button class="save-settings" id="saveSettings">Save settings</button></div>
+  </section>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const textarea = $("#prompt"), sendBtn = $("#send"), messagesEl = $("#messages"), welcome = $("#welcome"), content = $("#content");
+let messages = [], busy = false, chats = [], activeChat = null;
+let settings = { personality:"balanced", customInstructions:"", memory:"" };
+const icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1.7 3.3 5.5 4.2 6.8 7.2 1.7 4-1.1 9-6.8 10-5.7-1-8.5-6-6.8-10C6.5 7.2 10.3 6.3 12 3Z"/></svg>';
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function inlineMarkdown(text){
+  let out=escapeHTML(text);
+  out=out.replace(/`([^`]+)`/g,'<code>$1</code>');
+  out=out.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/__(.*?)__/g,'<strong>$1</strong>');
+  out=out.replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<em>$2</em>');
+  out=out.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  return out;
+}
+function formatText(source){
+  const lines=String(source||'').replace(/\r/g,'').split('\n');let html='',paragraph=[],listType=null,code=false,codeLines=[];
+  const flushP=()=>{if(paragraph.length){html+='<p>'+inlineMarkdown(paragraph.join('\n')).replace(/\n/g,'<br>')+'</p>';paragraph=[];}};
+  const closeList=()=>{if(listType){html+=`</${listType}>`;listType=null;}};
+  for(const line of lines){
+    if(line.trim().startsWith('```')){flushP();closeList();if(code){html+='<pre><code>'+escapeHTML(codeLines.join('\n'))+'</code></pre>';codeLines=[];code=false;}else code=true;continue;}
+    if(code){codeLines.push(line);continue;}
+    const heading=line.match(/^(#{1,3})\s+(.+)$/);
+    const bullet=line.match(/^\s*[-*+]\s+(.+)$/);
+    const numbered=line.match(/^\s*\d+[.)]\s+(.+)$/);
+    if(!line.trim()){flushP();closeList();continue;}
+    if(heading){flushP();closeList();const n=heading[1].length;html+=`<h${n}>${inlineMarkdown(heading[2])}</h${n}>`;continue;}
+    if(/^\s*---+\s*$/.test(line)){flushP();closeList();html+='<hr>';continue;}
+    if(line.startsWith('>')){flushP();closeList();html+='<blockquote>'+inlineMarkdown(line.replace(/^>\s?/,''))+'</blockquote>';continue;}
+    if(bullet||numbered){flushP();const nextType=bullet?'ul':'ol';if(listType!==nextType){closeList();listType=nextType;html+=`<${listType}>`;}html+='<li>'+inlineMarkdown((bullet||numbered)[1])+'</li>';continue;}
+    closeList();paragraph.push(line);
+  }
+  if(code)html+='<pre><code>'+escapeHTML(codeLines.join('\n'))+'</code></pre>';
+  flushP();closeList();return html;
+}
+function render(){
+  const has=messages.length>0;welcome.hidden=has;messagesEl.hidden=!has;messagesEl.innerHTML='';
+  messages.forEach(m=>{const el=document.createElement('div');el.className='message '+m.role;const bubble=m.pending?'<div class="typing" aria-label="Luma is thinking"><i></i><i></i><i></i></div>':formatText(m.content);el.innerHTML=`<div class="msg-avatar">${m.role==='assistant'?icon:'Y'}</div><div class="bubble">${bubble}</div>`;messagesEl.appendChild(el);});
+  content.scrollTop=content.scrollHeight;
+}
+function persistChats(){localStorage.setItem('luma-chats',JSON.stringify(chats.slice(0,30)));}
+function renderHistory(){
+  const el=$("#history");el.innerHTML='';
+  chats.forEach(c=>{
+    const row=document.createElement('div');row.className='history-row';
+    const open=document.createElement('button');open.className='history-open'+(c.id===activeChat?' active':'');open.textContent=c.title||'New conversation';open.title=c.title||'New conversation';open.onclick=()=>loadChat(c.id);
+    const tools=document.createElement('div');tools.className='history-tools';
+    const rename=document.createElement('button');rename.type='button';rename.textContent='✎';rename.title='Rename chat';rename.setAttribute('aria-label','Rename chat');rename.onclick=()=>{const title=window.prompt('Rename this conversation:',c.title);if(title&&title.trim()){c.title=title.trim().slice(0,60);persistChats();renderHistory();}};
+    const del=document.createElement('button');del.type='button';del.textContent='×';del.title='Delete chat';del.setAttribute('aria-label','Delete chat');del.onclick=()=>{if(!window.confirm('Delete this conversation?'))return;chats=chats.filter(x=>x.id!==c.id);if(activeChat===c.id)newChat();persistChats();renderHistory();};
+    tools.append(rename,del);row.append(open,tools);el.appendChild(row);
+  });
+}
+function saveChat(){
+  if(!messages.length)return;
+  let c=chats.find(x=>x.id===activeChat);
+  if(!c){c={id:activeChat||String(Date.now()),title:messages.find(m=>m.role==='user')?.content.slice(0,34)||'New conversation',messages:[]};activeChat=c.id;chats.unshift(c);}
+  c.messages=messages.filter(m=>!m.pending);c.updatedAt=Date.now();chats.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));chats=chats.slice(0,30);persistChats();renderHistory();
+}
+function loadChat(id){if(busy)return;const c=chats.find(x=>x.id===id);if(!c)return;activeChat=id;messages=structuredClone(c.messages||[]);render();renderHistory();}
+function newChat(){if(busy)return;messages=[];activeChat=null;render();renderHistory();textarea.focus();}
+function saveSettings(){
+  settings={personality:$("#personality").value,customInstructions:$("#customInstructions").value.trim(),memory:$("#memoryNotes").value.trim()};
+  localStorage.setItem('luma-settings',JSON.stringify(settings));$("#settingsModal").hidden=true;
+}
+function openSettings(){$("#personality").value=settings.personality;$("#customInstructions").value=settings.customInstructions;$("#memoryNotes").value=settings.memory;$("#settingsModal").hidden=false;$("#personality").focus();}
+async function loadModels(){
+  try{const r=await fetch('/api/models');if(!r.ok)throw new Error('Models unavailable');const data=await r.json();const select=$("#modelSelect");select.innerHTML='';(data.models||[]).forEach(m=>{const option=document.createElement('option');option.value=m.id;option.textContent=m.name;option.title=m.description||'';select.appendChild(option);});
+    const saved=localStorage.getItem('luma-model');select.value=(data.models||[]).some(m=>m.id===saved)?saved:(data.defaultModel||'openai/gpt-oss-120b');
+  }catch{const select=$("#modelSelect");select.value='openai/gpt-oss-120b';}
+}
+async function checkHealth(){try{const r=await fetch('/api/health');const d=await r.json();$("#connection").textContent=d.configured?'Connected':'Key needed';}catch{$("#connection").textContent='Server offline';}}
+async function send(){
+  const text=textarea.value.trim();if(!text||busy)return;
+  busy=true;sendBtn.disabled=true;textarea.value='';textarea.style.height='auto';
+  messages.push({role:'user',content:text});messages.push({role:'assistant',content:'',pending:true});render();
+  const assistant={role:'assistant',content:''};
+  try{
+    const history=messages.filter(m=>!m.pending).map(m=>({role:m.role,content:m.content}));
+    const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history,model:$("#modelSelect").value,personality:settings.personality,customInstructions:settings.customInstructions,memory:settings.memory})});
+    if(!response.ok){let err='Request failed';try{err=(await response.json()).error||err}catch{}throw new Error(err);}
+    if(!response.body)throw new Error('The server returned an empty stream.');
+    const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='';
+    while(true){const {value,done}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});const lines=buffer.split('\n');buffer=lines.pop()||'';
+      for(const line of lines){if(!line.startsWith('data:'))continue;const raw=line.slice(5).trim();if(!raw||raw==='[DONE]')continue;try{const data=JSON.parse(raw);if(data.error)throw new Error(data.error);const piece=data.choices?.[0]?.delta?.content;if(piece){assistant.content+=piece;messages[messages.length-1]=assistant;render();}}catch(parseErr){if(parseErr instanceof Error&&parseErr.message!== 'Unexpected end of JSON input'&&!parseErr.message.includes('JSON')){throw parseErr;}}}
+    }
+    if(!assistant.content)assistant.content='I didn’t receive any text back. Please try again.';
+    messages[messages.length-1]=assistant;saveChat();
+  }catch(e){messages[messages.length-1]={role:'assistant',content:'**I couldn’t connect.** '+e.message+'\n\nCheck that the server is running and your Groq API key is configured in `.env`.'};saveChat();}
+  finally{busy=false;sendBtn.disabled=false;render();textarea.focus();}
+}
+sendBtn.onclick=send;
+textarea.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+textarea.addEventListener('input',()=>{textarea.style.height='auto';textarea.style.height=Math.min(textarea.scrollHeight,150)+'px';});
+$("#newChat").onclick=newChat;
+document.querySelectorAll('.suggestion').forEach(b=>b.onclick=()=>{textarea.value=b.dataset.prompt;send();});
+$("#openSettings").onclick=openSettings;$("#closeSettings").onclick=()=>$("#settingsModal").hidden=true;$("#saveSettings").onclick=saveSettings;
+$("#clearMemory").onclick=()=>{if(window.confirm('Clear Luma’s saved memory notes?')){$("#memoryNotes").value='';settings.memory='';localStorage.setItem('luma-settings',JSON.stringify(settings));}};
+$("#settingsModal").addEventListener('click',e=>{if(e.target.id==='settingsModal')e.currentTarget.hidden=true;});
+$("#modelSelect").addEventListener('change',e=>localStorage.setItem('luma-model',e.target.value));
+try{chats=JSON.parse(localStorage.getItem('luma-chats')||'[]');if(!Array.isArray(chats))chats=[];}catch{chats=[];}
+try{const stored=JSON.parse(localStorage.getItem('luma-settings')||'{}');settings={...settings,...stored};}catch{}
+renderHistory();loadModels();checkHealth();
+</script>
+</body>
+</html>
